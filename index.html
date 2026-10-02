@@ -314,6 +314,55 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL: แก้ไขเกี่ยวกับเรา (ABOUT TEXT MODAL) -->
+    <div id="aboutTextModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-xl border border-pink-100 relative space-y-3">
+            <button onclick="closeEditAboutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center space-y-1">
+                <span class="text-xl">🌸</span>
+                <h3 class="font-heading text-sm text-pastel-darkpink font-medium">แก้ไขข้อมูลเกี่ยวกับเรา</h3>
+            </div>
+            <div class="space-y-2.5 text-xs">
+                <div>
+                    <label class="block text-gray-600 font-medium mb-1">ข้อความรายละเอียดเกี่ยวกับเรา</label>
+                    <textarea id="inputAboutDetailText" rows="4" placeholder="พิมพ์ข้อความเกี่ยวกับร้านค้าที่นี่..." class="w-full bg-pastel-lightpink/30 border border-pink-200 rounded-xl p-2.5 focus:outline-none focus:border-pastel-darkpink text-xs leading-relaxed"></textarea>
+                </div>
+                <button onclick="saveAboutText()" class="w-full bg-pastel-darkpink hover:bg-pastel-deepness text-white py-2 rounded-full font-medium shadow-md transition text-xs">
+                    บันทึกข้อมูลเกี่ยวกับเรา ✨
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: แก้ไขช่องทางการติดต่อ (CONTACT MODAL) -->
+    <div id="contactModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-xl border border-pink-100 relative space-y-3">
+            <button onclick="closeContactModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center space-y-1">
+                <span class="text-xl">💬</span>
+                <h3 class="font-heading text-sm text-pastel-darkpink font-medium">แก้ไขช่องทางการติดต่อ</h3>
+            </div>
+            <div class="space-y-2.5 text-xs">
+                <div>
+                    <label class="block text-gray-600 font-medium mb-1"><i class="fa-brands fa-instagram text-pink-500 mr-1"></i> Instagram</label>
+                    <input type="text" id="inputContactIg" placeholder="@pinkiestudio" class="w-full bg-pastel-lightpink/30 border border-pink-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-pastel-darkpink">
+                </div>
+                <div>
+                    <label class="block text-gray-600 font-medium mb-1"><i class="fa-brands fa-line text-green-500 mr-1"></i> LINE</label>
+                    <input type="text" id="inputContactLine" placeholder="@pinkiestudio" class="w-full bg-pastel-lightpink/30 border border-pink-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-pastel-darkpink">
+                </div>
+                <div>
+                    <label class="block text-gray-600 font-medium mb-1"><i class="fa-brands fa-facebook text-blue-500 mr-1"></i> Facebook</label>
+                    <input type="text" id="inputContactFb" placeholder="Pinkie Studio" class="w-full bg-pastel-lightpink/30 border border-pink-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-pastel-darkpink">
+                </div>
+                <button onclick="saveContactData()" class="w-full bg-pastel-darkpink hover:bg-pastel-deepness text-white py-2 rounded-full font-medium shadow-md transition text-xs">
+                    บันทึกการติดต่อ ✨
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- WRITE REVIEW MODAL -->
     <div id="reviewModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-3xl max-w-xs w-full p-5 shadow-xl border border-pink-100 relative space-y-3">
@@ -600,6 +649,57 @@
                     alert('บันทึกข้อมูลส่วนแบนเนอร์เรียบร้อยแล้วค่ะ ✨');
                 }
             });
+        }
+
+        // --- ABOUT TEXT MODAL LOGIC (แก้ไขเกี่ยวกับเราแบบหน้าต่างเด้ง) ---
+        function openEditAboutModal() {
+            document.getElementById('inputAboutDetailText').value = document.getElementById('aboutDetailText').textContent.trim();
+            document.getElementById('aboutTextModal').classList.remove('hidden');
+        }
+        function closeEditAboutModal() {
+            document.getElementById('aboutTextModal').classList.add('hidden');
+        }
+        function saveAboutText() {
+            const newText = document.getElementById('inputAboutDetailText').value.trim();
+            if (!newText) return alert('กรุณากรอกข้อความเกี่ยวกับเราค่ะ');
+            if (rtdb) {
+                rtdb.ref('site_settings/aboutText').set(newText, (err) => {
+                    if (!err) {
+                        closeEditAboutModal();
+                        alert('บันทึกข้อความเกี่ยวกับเราเรียบร้อยแล้วค่ะ ✨');
+                    }
+                });
+            }
+        }
+
+        // --- CONTACT MODAL LOGIC (แก้ไขช่องทางการติดต่อแบบหน้าต่างเด้ง) ---
+        function openContactModal() {
+            document.getElementById('inputContactIg').value = document.getElementById('contactIgText').textContent.trim();
+            document.getElementById('inputContactLine').value = document.getElementById('contactLineText').textContent.trim();
+            document.getElementById('inputContactFb').value = document.getElementById('contactFbText').textContent.trim();
+            document.getElementById('contactModal').classList.remove('hidden');
+        }
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.add('hidden');
+        }
+        function saveContactData() {
+            const ig = document.getElementById('inputContactIg').value.trim();
+            const line = document.getElementById('inputContactLine').value.trim();
+            const fb = document.getElementById('inputContactFb').value.trim();
+            
+            if (rtdb) {
+                const updates = {};
+                if (ig) updates['site_settings/contactIg'] = ig;
+                if (line) updates['site_settings/contactLine'] = line;
+                if (fb) updates['site_settings/contactFb'] = fb;
+                
+                rtdb.ref().update(updates, (err) => {
+                    if (!err) {
+                        closeContactModal();
+                        alert('บันทึกช่องทางการติดต่อเรียบร้อยแล้วค่ะ ✨');
+                    }
+                });
+            }
         }
 
         // --- 4. NAVIGATION SYSTEM ---
@@ -948,21 +1048,7 @@
             });
             document.getElementById('adminBtnText').textContent = isAdmin ? 'แอดมิน' : 'แอดมิน';
         }
-        function openEditAboutModal() {
-            const newText = prompt('แก้ไขข้อความเกี่ยวกับเรา:', document.getElementById('aboutDetailText').textContent);
-            if (newText !== null && rtdb) rtdb.ref('site_settings/aboutText').set(newText);
-        }
-        function openContactModal() {
-            const ig = prompt('แก้ไข Instagram:', document.getElementById('contactIgText').textContent);
-            const line = prompt('แก้ไข LINE:', document.getElementById('contactLineText').textContent);
-            const fb = prompt('แก้ไข Facebook:', document.getElementById('contactFbText').textContent);
-            
-            if (rtdb) {
-                if (ig !== null) rtdb.ref('site_settings/contactIg').set(ig);
-                if (line !== null) rtdb.ref('site_settings/contactLine').set(line);
-                if (fb !== null) rtdb.ref('site_settings/contactFb').set(fb);
-            }
-        }
+
         // จัดการสินค้า
         function openProductModal(isEdit = false) {
             document.getElementById('productModalTitle').textContent = isEdit ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่';

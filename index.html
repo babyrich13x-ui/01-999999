@@ -39,26 +39,13 @@
         }
     </script>
     <style>
-        body {
-            background-color: #FAF4F5;
-            font-family: 'Kanit', sans-serif;
-        }
-        .font-heading {
-            font-family: 'Mitr', sans-serif;
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #FFF0F3;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #FFB6C1;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #FF94A8;
-        }
+        body { background-color: #FAF4F5; font-family: 'Kanit', sans-serif; }
+        .font-heading { font-family: 'Mitr', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FFF0F3; }
+        ::-webkit-scrollbar-thumb { background: #FFB6C1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF94A8; }
+        .aspect-banner { aspect-ratio: 1122 / 495; }
     </style>
 </head>
 <body class="text-gray-700 min-h-screen flex flex-col justify-between">
@@ -67,7 +54,7 @@
     <div id="adminBanner" class="hidden bg-pastel-deepness text-white py-2 px-4 text-center text-sm font-medium shadow-md flex justify-between items-center transition-all duration-300">
         <div class="flex items-center space-x-2">
             <span class="bg-white text-pastel-darkpink text-xs px-2 py-0.5 rounded-full font-bold">ADMIN MODE</span>
-            <span>คุณกำลังอยู่ในโหมดผู้ดูแลระบบ สามารถแก้ไข/ลบสินค้า และอนุมัติรีวิวได้</span>
+            <span>จัดการสินค้า หมวดหมู่ แบนเนอร์ โลโก้ และอนุมัติรีวิวได้</span>
         </div>
         <button onclick="logoutAdmin()" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1 rounded-full transition duration-200">
             <i class="fa-solid fa-sign-out-alt mr-1"></i> ออกจากระบบ
@@ -77,28 +64,34 @@
     <!-- Header / Navbar -->
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-pastel-pink/40 shadow-sm">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="#" onclick="showTab('home')" class="flex items-center space-x-2 group">
-                <div class="w-10 h-10 rounded-full bg-pastel-pink flex items-center justify-center text-pastel-darkpink text-xl font-bold shadow-inner group-hover:scale-105 transition">
-                    🌸
-                </div>
-                <div>
-                    <span class="font-heading text-xl font-medium text-pastel-darkpink tracking-wide">Pinkie Studio</span>
-                    <span class="block text-[10px] text-pink-400 tracking-wider">MINIMAL STORE</span>
-                </div>
-            </a>
+            <div class="flex items-center space-x-2">
+                <a href="#" onclick="showTab('home')" class="flex items-center space-x-2 group">
+                    <div class="w-10 h-10 rounded-full bg-pastel-pink flex items-center justify-center text-pastel-darkpink text-xl font-bold shadow-inner group-hover:scale-105 transition overflow-hidden">
+                        <img id="storeLogoImg" src="" class="w-full h-full object-cover hidden" alt="Logo">
+                        <span id="storeLogoText">🌸</span>
+                    </div>
+                    <div>
+                        <span id="storeNameText" class="font-heading text-xl font-medium text-pastel-darkpink tracking-wide">Pinkie Studio</span>
+                        <span class="block text-[10px] text-pink-400 tracking-wider">MINIMAL STORE</span>
+                    </div>
+                </a>
+                <button id="changeLogoBtn" onclick="openLogoModal()" class="hidden text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-lg hover:bg-amber-200 ml-2">
+                    <i class="fa-solid fa-camera"></i> เปลี่ยนโลโก้
+                </button>
+            </div>
 
             <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
                 <button onclick="showTab('home')" id="nav-home" class="nav-btn text-pastel-darkpink font-bold hover:text-pastel-darkpink transition flex items-center space-x-1">
                     <i class="fa-solid fa-store text-xs"></i> <span>สินค้า</span>
                 </button>
+                <button onclick="showTab('reviews')" id="nav-reviews" class="nav-btn text-gray-500 hover:text-pastel-darkpink transition flex items-center space-x-1">
+                    <i class="fa-solid fa-star text-xs"></i> <span>รีวิวสินค้า</span>
+                </button>
                 <button onclick="showTab('about')" id="nav-about" class="nav-btn text-gray-500 hover:text-pastel-darkpink transition flex items-center space-x-1">
                     <i class="fa-solid fa-heart text-xs"></i> <span>เกี่ยวกับเรา</span>
                 </button>
-                <button onclick="showTab('contact')" id="nav-contact" class="nav-btn text-gray-500 hover:text-pastel-darkpink transition flex items-center space-x-1">
-                    <i class="fa-solid fa-comment-dots text-xs"></i> <span>ติดต่อเรา</span>
-                </button>
                 <button onclick="showTab('profile')" id="nav-profile" class="nav-btn text-gray-500 hover:text-pastel-darkpink transition flex items-center space-x-1">
-                    <i class="fa-solid fa-user text-xs"></i> <span>โปรไฟล์ & รีวิว</span>
+                    <i class="fa-solid fa-user text-xs"></i> <span>โปรไฟล์ & ติดต่อเรา</span>
                 </button>
             </nav>
 
@@ -117,14 +110,14 @@
             <button onclick="showTab('home')" class="text-pastel-darkpink flex flex-col items-center">
                 <i class="fa-solid fa-store mb-0.5"></i> สินค้า
             </button>
+            <button onclick="showTab('reviews')" class="text-gray-500 flex flex-col items-center">
+                <i class="fa-solid fa-star mb-0.5"></i> รีวิว
+            </button>
             <button onclick="showTab('about')" class="text-gray-500 flex flex-col items-center">
                 <i class="fa-solid fa-heart mb-0.5"></i> เกี่ยวกับเรา
             </button>
-            <button onclick="showTab('contact')" class="text-gray-500 flex flex-col items-center">
-                <i class="fa-solid fa-comment-dots mb-0.5"></i> ติดต่อเรา
-            </button>
             <button onclick="showTab('profile')" class="text-gray-500 flex flex-col items-center">
-                <i class="fa-solid fa-user mb-0.5"></i> รีวิว
+                <i class="fa-solid fa-user mb-0.5"></i> โปรไฟล์
             </button>
         </div>
     </header>
@@ -146,12 +139,10 @@
                 <div class="absolute -right-8 -bottom-8 opacity-20 md:opacity-40 pointer-events-none text-9xl text-pastel-darkpink">🎀</div>
             </div>
 
+            <!-- หมวดหมู่สินค้า -->
             <div id="product-list" class="flex flex-col md:flex-row items-center justify-between gap-4 pt-4">
-                <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-                    <button onclick="filterCategory('all')" class="cat-btn active border border-pastel-pink bg-pastel-pink text-pastel-darkpink px-4 py-1.5 rounded-full text-xs font-medium transition whitespace-nowrap">ทั้งหมด</button>
-                    <button onclick="filterCategory('dessert')" class="cat-btn border border-pink-200 bg-white text-gray-600 hover:bg-pastel-lightpink px-4 py-1.5 rounded-full text-xs font-medium transition whitespace-nowrap">ขนมหวาน</button>
-                    <button onclick="filterCategory('drink')" class="cat-btn border border-pink-200 bg-white text-gray-600 hover:bg-pastel-lightpink px-4 py-1.5 rounded-full text-xs font-medium transition whitespace-nowrap">เครื่องดื่ม</button>
-                    <button onclick="filterCategory('cute')" class="cat-btn border border-pink-200 bg-white text-gray-600 hover:bg-pastel-lightpink px-4 py-1.5 rounded-full text-xs font-medium transition whitespace-nowrap">ของใช้น่ารัก</button>
+                <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0" id="categoriesContainer">
+                    <!-- Dynamic Categories Rendered Here -->
                 </div>
 
                 <div class="flex items-center space-x-2 w-full md:w-auto">
@@ -159,64 +150,32 @@
                         <input type="text" id="searchInput" oninput="searchProducts()" placeholder="ค้นหาสินค้า..." class="w-full bg-white border border-pink-200 rounded-full pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:border-pastel-darkpink">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
                     </div>
+                    <button id="manageCategoriesBtn" onclick="openCategoryModal()" class="hidden bg-amber-500 text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-amber-600 transition whitespace-nowrap flex items-center space-x-1 shadow-sm">
+                        <i class="fa-solid fa-list-check text-xs"></i> <span>จัดการหมวดหมู่</span>
+                    </button>
                     <button id="addProductBtn" onclick="openProductModal()" class="hidden bg-pastel-darkpink text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-pastel-deepness transition whitespace-nowrap flex items-center space-x-1 shadow-sm">
                         <i class="fa-solid fa-plus text-xs"></i> <span>เพิ่มสินค้า</span>
                     </button>
                 </div>
             </div>
 
-            <div id="productsContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
-        </section>
-
-        <!-- PAGE 2: ABOUT US -->
-        <section id="page-about" class="hidden space-y-6 max-w-3xl mx-auto">
-            <div class="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-pink-100 text-center space-y-4">
-                <div class="w-20 h-20 bg-pastel-lightpink rounded-full flex items-center justify-center mx-auto text-3xl text-pastel-darkpink">🌸</div>
-                <h2 class="font-heading text-2xl text-pastel-darkpink font-medium">เกี่ยวกับ Pinkie Studio</h2>
-                <div class="w-12 h-1 bg-pastel-pink mx-auto rounded-full"></div>
-                <p class="text-sm text-gray-600 leading-relaxed max-w-lg mx-auto">
-                    Pinkie Studio เริ่มต้นจากความรักในของชิ้นเล็กๆ ที่น่ารักและเรียบง่าย สินค้าทุกชิ้นของเราถูกคัดสรรด้วยความใส่ใจเพื่อมอบรอยยิ้มให้กับทุกคนค่ะ ✨
-                </p>
-            </div>
-        </section>
-
-        <!-- PAGE 3: CONTACT -->
-        <section id="page-contact" class="hidden space-y-6 max-w-3xl mx-auto">
-            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-pink-100 space-y-6 text-center">
-                <h2 class="font-heading text-2xl text-pastel-darkpink font-medium">ช่องทางการติดต่อ</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="p-4 bg-pastel-lightpink/50 rounded-2xl border border-pink-100">
-                        <i class="fa-brands fa-instagram text-2xl text-pink-500 mb-1"></i>
-                        <div class="text-xs font-medium">Instagram</div>
-                        <div class="text-[11px] text-gray-500">@pinkiestudio</div>
-                    </div>
-                    <div class="p-4 bg-pastel-lightpink/50 rounded-2xl border border-pink-100">
-                        <i class="fa-brands fa-line text-2xl text-green-500 mb-1"></i>
-                        <div class="text-xs font-medium">LINE Official</div>
-                        <div class="text-[11px] text-gray-500">@pinkiestudio</div>
-                    </div>
-                    <div class="p-4 bg-pastel-lightpink/50 rounded-2xl border border-pink-100">
-                        <i class="fa-brands fa-facebook text-2xl text-blue-500 mb-1"></i>
-                        <div class="text-xs font-medium">Facebook</div>
-                        <div class="text-[11px] text-gray-500">Pinkie Studio</div>
-                    </div>
+            <div id="productsContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <div class="col-span-full text-center py-12 text-gray-400 text-xs">
+                    <i class="fa-solid fa-spinner fa-spin text-xl text-pastel-darkpink mb-2"></i>
+                    <p>กำลังโหลดสินค้า...</p>
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 4: PROFILE & REVIEWS -->
-        <section id="page-profile" class="hidden space-y-6 max-w-4xl mx-auto">
+        <!-- PAGE 2: REVIEWS (แยกออกมาอยู่หน้าใหม่) -->
+        <section id="page-reviews" class="hidden space-y-6 max-w-4xl mx-auto">
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-pink-100 flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="w-14 h-14 rounded-full bg-pastel-pink/60 p-1 flex-shrink-0">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" class="w-full h-full rounded-full object-cover">
-                    </div>
-                    <div>
-                        <h3 class="font-medium text-gray-800 text-base">คุณลูกค้าสุดน่ารัก 🌸</h3>
-                        <p class="text-xs text-gray-400">สมาชิก Pinkie VIP Member</p>
-                    </div>
+                <div>
+                    <h3 class="font-heading text-lg text-pastel-darkpink font-medium">💬 รีวิวจากลูกค้า (Customer Reviews)</h3>
+                    <p class="text-xs text-gray-400">แบ่งปันความประทับใจและความคิดเห็นของคุณได้ที่นี่ค่ะ</p>
                 </div>
-                <button onclick="toggleWriteReviewModal()" class="bg-pastel-darkpink hover:bg-pastel-deepness text-white text-xs px-4 py-2 rounded-full font-medium transition shadow-sm flex items-center space-x-1">
+                <!-- ซ่อนปุ่มเขียนรีวิวอัตโนมัติหากอยู่ในโหมดแอดมิน -->
+                <button id="writeReviewBtn" onclick="toggleWriteReviewModal()" class="bg-pastel-darkpink hover:bg-pastel-deepness text-white text-xs px-4 py-2 rounded-full font-medium transition shadow-sm flex items-center space-x-1">
                     <i class="fa-solid fa-pen text-[10px]"></i>
                     <span>+ เขียนรีวิวสินค้า</span>
                 </button>
@@ -237,13 +196,83 @@
             <!-- APPROVED REVIEWS FEED -->
             <div class="bg-white rounded-3xl p-6 shadow-sm border border-pink-100 space-y-6">
                 <div class="flex items-center justify-between border-b border-pink-50 pb-4">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-lg">💬</span>
-                        <h3 class="font-heading text-lg text-pastel-darkpink font-medium">รีวิวจากลูกค้า (Customer Reviews)</h3>
-                    </div>
                     <span id="approvedCountText" class="text-xs text-gray-400">ทั้งหมด 0 รีวิว</span>
                 </div>
                 <div id="approvedReviewsContainer" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- PAGE 3: ABOUT US -->
+        <section id="page-about" class="hidden space-y-6 max-w-4xl mx-auto">
+            <!-- แบนเนอร์หน้าเกี่ยวกับเรา ขนาด 1122x495 -->
+            <div class="relative w-full aspect-banner bg-pastel-lightpink rounded-3xl overflow-hidden border border-pink-100 shadow-sm group">
+                <img id="aboutBannerImg" src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=1200&auto=format&fit=crop&q=80" class="w-full h-full object-cover">
+                <button id="editAboutBannerBtn" onclick="openBannerModal('about')" class="hidden absolute top-4 right-4 bg-white/90 text-amber-600 px-3 py-1.5 rounded-full text-xs font-medium shadow hover:bg-white flex items-center space-x-1">
+                    <i class="fa-solid fa-camera"></i> <span>เปลี่ยนแบนเนอร์ (1122x495)</span>
+                </button>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-pink-100 text-center space-y-4">
+                <div class="w-20 h-20 bg-pastel-lightpink rounded-full flex items-center justify-center mx-auto text-3xl text-pastel-darkpink">🌸</div>
+                <h2 class="font-heading text-2xl text-pastel-darkpink font-medium">เกี่ยวกับ Pinkie Studio</h2>
+                <div class="w-12 h-1 bg-pastel-pink mx-auto rounded-full"></div>
+                <p id="aboutDetailText" class="text-sm text-gray-600 leading-relaxed max-w-lg mx-auto">
+                    Pinkie Studio เริ่มต้นจากความรักในของชิ้นเล็กๆ ที่น่ารักและเรียบง่าย สินค้าทุกชิ้นของเราถูกคัดสรรด้วยความใส่ใจเพื่อมอบรอยยิ้มให้กับทุกคนค่ะ ✨
+                </p>
+                <button id="editAboutTextBtn" onclick="openEditAboutModal()" class="hidden bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs hover:bg-amber-200">
+                    <i class="fa-solid fa-pen"></i> แก้ไขเนื้อหาเกี่ยวกับเรา
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 4: PROFILE & CONTACT -->
+        <section id="page-profile" class="hidden space-y-6 max-w-4xl mx-auto">
+            <!-- ส่วนโปรไฟล์ -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-pink-100 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-full bg-pastel-pink/60 p-1 flex-shrink-0">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" class="w-full h-full rounded-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-800 text-base">คุณลูกค้าสุดน่ารัก 🌸</h3>
+                        <p class="text-xs text-gray-400">สมาชิก Pinkie VIP Member</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- แบนเนอร์หน้าโปรไฟล์ (1122x495) อยู่ข้างล่างโปรไฟล์ ข้างบนติดต่อเรา -->
+            <div class="relative w-full aspect-banner bg-pastel-lightpink rounded-3xl overflow-hidden border border-pink-100 shadow-sm group">
+                <img id="profileBannerImg" src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1200&auto=format&fit=crop&q=80" class="w-full h-full object-cover">
+                <button id="editProfileBannerBtn" onclick="openBannerModal('profile')" class="hidden absolute top-4 right-4 bg-white/90 text-amber-600 px-3 py-1.5 rounded-full text-xs font-medium shadow hover:bg-white flex items-center space-x-1">
+                    <i class="fa-solid fa-camera"></i> <span>เปลี่ยนแบนเนอร์ (1122x495)</span>
+                </button>
+            </div>
+
+            <!-- ส่วนติดต่อเรา (ย้ายมาไว้ที่นี่) -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-pink-100 space-y-6 text-center">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-heading text-xl text-pastel-darkpink font-medium">ช่องทางการติดต่อ (Contact Us)</h2>
+                    <button id="editContactBtn" onclick="openContactModal()" class="hidden text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-200">
+                        <i class="fa-solid fa-pen"></i> แก้ไขข้อมูลติดต่อ
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-pastel-lightpink/50 rounded-2xl border border-pink-100">
+                        <i class="fa-brands fa-instagram text-2xl text-pink-500 mb-1"></i>
+                        <div class="text-xs font-medium">Instagram</div>
+                        <div id="contactIgText" class="text-[11px] text-gray-500">@pinkiestudio</div>
+                    </div>
+                    <div class="p-4 bg-pastel-lightpink/50 rounded-2xl border border-pink-100">
+                        <i class="fa-brands fa-line text-2xl text-green-500 mb-1"></i>
+                        <div class="text-xs font-medium">LINE Official</div>
+                        <div id="contactLineText" class="text-[11px] text-gray-500">@pinkiestudio</div>
+                    </div>
+                    <div class="p-4 bg-pastel-lightpink/50 rounded-2xl border border-pink-100">
+                        <i class="fa-brands fa-facebook text-2xl text-blue-500 mb-1"></i>
+                        <div class="text-xs font-medium">Facebook</div>
+                        <div id="contactFbText" class="text-[11px] text-gray-500">Pinkie Studio</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -258,7 +287,7 @@
             <div class="text-center space-y-1">
                 <span class="text-2xl">📝✨</span>
                 <h3 class="font-heading text-lg text-pastel-darkpink font-medium">เขียนรีวิวสินค้า</h3>
-                <p class="text-xs text-gray-400">แนบรูปหลักฐานสลิป/รูปสินค้าเพื่อส่งให้แอดมินอนุมัตินะคะ</p>
+                <p class="text-xs text-gray-400">แนบรูปภาพสินค้า/สลิปจากอัลบั้มมือถือเพื่อส่งให้แอดมินอนุมัตินะคะ</p>
             </div>
             <form onsubmit="handleCustomerSubmitReview(event)" class="space-y-3 text-xs">
                 <div>
@@ -280,16 +309,71 @@
                     <textarea id="revComment" rows="3" required placeholder="แชร์ความประทับใจ..." class="w-full bg-pastel-lightpink/30 border border-pink-200 rounded-xl px-3 py-2 focus:outline-none focus:border-pastel-darkpink"></textarea>
                 </div>
                 <div>
-                    <label class="block text-gray-600 font-medium mb-1">แนบรูปหลักฐาน</label>
+                    <label class="block text-gray-600 font-medium mb-1">แนบรูปหลักฐาน (เลือกจากอัลบั้มมือถือ)</label>
                     <input type="file" id="revImageFile" accept="image/*" onchange="previewReviewImage(event)" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:bg-pastel-pink file:text-pastel-darkpink">
                     <div id="revImagePreview" class="hidden mt-2 relative w-20 h-20 border border-pink-200 rounded-xl overflow-hidden">
                         <img src="" id="imgPreviewTag" class="w-full h-full object-cover">
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-pastel-darkpink hover:bg-pastel-deepness text-white py-2.5 rounded-full font-medium transition shadow-md">
+                <button type="submit" id="submitReviewBtn" class="w-full bg-pastel-darkpink hover:bg-pastel-deepness text-white py-2.5 rounded-full font-medium transition shadow-md">
                     ส่งรีวิวให้แอดมินอนุมัติ 🌸
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL: จัดการหมวดหมู่ (Categories Modal) -->
+    <div id="categoryModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-pink-100 relative space-y-4">
+            <button onclick="closeCategoryModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-heading text-base text-pastel-darkpink font-medium">จัดการหมวดหมู่สินค้า</h3>
+            <div class="flex space-x-2">
+                <input type="text" id="newCatKey" placeholder="รหัส เช่น dessert" class="w-1/3 border border-pink-200 rounded-xl px-3 py-1.5 text-xs">
+                <input type="text" id="newCatName" placeholder="ชื่อแสดง เช่น ขนมหวาน" class="w-1/2 border border-pink-200 rounded-xl px-3 py-1.5 text-xs">
+                <button onclick="addCategory()" class="bg-pastel-darkpink text-white px-3 py-1.5 rounded-xl text-xs font-medium"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+            </div>
+            <div id="categoryListContainer" class="space-y-2 max-h-60 overflow-y-auto pt-2 border-t border-pink-100"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: เปลี่ยนโลโก้ร้าน -->
+    <div id="logoModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-xl border border-pink-100 relative space-y-4">
+            <button onclick="closeLogoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-heading text-base text-pastel-darkpink font-medium">เปลี่ยนโลโก้ร้าน</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-gray-600 mb-1">เลือกรูปจากอัลบั้มมือถือ</label>
+                    <input type="file" id="logoFileInput" accept="image/*" onchange="handleImageUpload(event, saveLogoData)" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:bg-pastel-pink file:text-pastel-darkpink">
+                </div>
+                <div class="text-center text-gray-400 font-bold">- หรือ -</div>
+                <div>
+                    <label class="block text-gray-600 mb-1">ใส่ URL รูปภาพ</label>
+                    <input type="url" id="logoUrlInput" placeholder="https://..." class="w-full border border-pink-200 rounded-xl px-3 py-2 text-xs">
+                </div>
+                <button onclick="saveLogoUrl()" class="w-full bg-pastel-darkpink text-white py-2 rounded-full text-xs font-medium">บันทึกโลโก้</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: เปลี่ยนแบนเนอร์ (1122x495) -->
+    <div id="bannerModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-pink-100 relative space-y-4">
+            <button onclick="closeBannerModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-heading text-base text-pastel-darkpink font-medium">เปลี่ยนรูปแบนเนอร์ (สัดส่วน 1122 x 495)</h3>
+            <input type="hidden" id="targetBannerType">
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-gray-600 mb-1">อัปโหลดจากอัลบั้มในโทรศัพท์มือถือ</label>
+                    <input type="file" id="bannerFileInput" accept="image/*" onchange="handleImageUpload(event, saveBannerData)" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:bg-pastel-pink file:text-pastel-darkpink">
+                </div>
+                <div class="text-center text-gray-400 font-bold">- หรือ -</div>
+                <div>
+                    <label class="block text-gray-600 mb-1">ระบุ URL รูปภาพ</label>
+                    <input type="url" id="bannerUrlInput" placeholder="https://..." class="w-full border border-pink-200 rounded-xl px-3 py-2 text-xs">
+                </div>
+                <button onclick="saveBannerUrl()" class="w-full bg-pastel-darkpink text-white py-2.5 rounded-full font-medium">บันทึกรูปแบนเนอร์</button>
+            </div>
         </div>
     </div>
 
@@ -332,7 +416,7 @@
 
     <!-- ADD/EDIT PRODUCT MODAL -->
     <div id="productModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-pink-100 relative space-y-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl border border-pink-100 relative space-y-4 max-h-[90vh] overflow-y-auto">
             <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 id="productModalTitle" class="font-heading text-base text-pastel-darkpink font-medium">เพิ่มสินค้าใหม่</h3>
             <form onsubmit="saveProduct(event)" class="space-y-3 text-xs">
@@ -343,19 +427,17 @@
                 </div>
                 <div>
                     <label class="block text-gray-600 mb-1">หมวดหมู่</label>
-                    <select id="prodCategory" class="w-full border border-pink-200 rounded-xl px-3 py-2 bg-white">
-                        <option value="dessert">ขนมหวาน</option>
-                        <option value="drink">เครื่องดื่ม</option>
-                        <option value="cute">ของใช้น่ารัก</option>
-                    </select>
+                    <select id="prodCategory" class="w-full border border-pink-200 rounded-xl px-3 py-2 bg-white"></select>
                 </div>
                 <div>
                     <label class="block text-gray-600 mb-1">ราคา (บาท)</label>
                     <input type="number" id="prodPrice" required placeholder="85" class="w-full border border-pink-200 rounded-xl px-3 py-2 focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-gray-600 mb-1">URL รูปภาพสินค้า</label>
-                    <input type="url" id="prodImageUrl" required placeholder="https://..." class="w-full border border-pink-200 rounded-xl px-3 py-2 focus:outline-none">
+                    <label class="block text-gray-600 mb-1">อัปโหลดรูปภาพจากมือถือ</label>
+                    <input type="file" accept="image/*" onchange="handleImageUpload(event, setProductImageBase64)" class="w-full text-xs text-gray-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:bg-pastel-pink file:text-pastel-darkpink mb-2">
+                    <label class="block text-gray-600 mb-1">หรือ URL รูปภาพสินค้า</label>
+                    <input type="url" id="prodImageUrl" placeholder="https://..." class="w-full border border-pink-200 rounded-xl px-3 py-2 focus:outline-none">
                 </div>
                 <button type="submit" class="w-full bg-pastel-darkpink hover:bg-pastel-deepness text-white py-2.5 rounded-full font-medium transition shadow-md">บันทึกสินค้า</button>
             </form>
@@ -366,12 +448,12 @@
         <p>© 2026 Pinkie Studio Store. Made with 💕 for Pastel Lovers</p>
     </footer>
 
-    <!-- FIREBASE SDK & APP LOGIC -->
+    <!-- FIREBASE SDK (Compat Version) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // FIREBASE CONFIG
+        // --- 1. FIREBASE INITIALIZATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyC31MlhrmXO9g5wnZJNT3OnPr8Tayvs5tU",
             authDomain: "yoneko-store.firebaseapp.com",
@@ -383,48 +465,77 @@
             measurementId: "G-R1QT1BSN90"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const rtdb = firebase.database();
+        let rtdb;
+        try {
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            rtdb = firebase.database();
+        } catch (e) { console.error("Firebase init failed:", e); }
 
+        // --- 2. GLOBAL STATES ---
         let products = [];
         let reviews = [];
-        let cart = JSON.parse(localStorage.getItem('pinkie_cart')) || [];
+        let categories = { 'dessert': 'ขนมหวาน', 'drink': 'เครื่องดื่ม', 'cute': 'ของใช้น่ารัก' };
+        let cart = [];
+        try { cart = JSON.parse(localStorage.getItem('pinkie_cart')) || []; } catch(e) { cart = []; }
+
         let isAdmin = localStorage.getItem('pinkie_is_admin') === 'true';
         let currentSelectedRating = 5;
         let currentUploadedImageBase64 = null;
+        let currentCategoryFilter = 'all';
+        let prodImageBase64Temp = null;
 
-        // REALTIME LISTENERS
-        rtdb.ref('products').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                products = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-            } else {
-                products = [
-                    { id: '1', name: 'Strawberry Cream Cake 🍰', category: 'dessert', price: 95, image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=500&auto=format&fit=crop&q=80' },
-                    { id: '2', name: 'Pink Milk Boba 🧋', category: 'drink', price: 65, image: 'https://images.unsplash.com/photo-1558857563-b371033873b8?w=500&auto=format&fit=crop&q=80' }
-                ];
-            }
-            renderProducts(products);
-        });
+        // --- 3. REALTIME LISTENERS ---
+        if (rtdb) {
+            // สินค้า
+            rtdb.ref('products').on('value', (snap) => {
+                const data = snap.val();
+                products = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                applyFilterAndRender();
+            });
 
-        rtdb.ref('reviews').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                reviews = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-            } else {
-                reviews = [];
-            }
-            renderReviews();
-        });
+            // รีวิว
+            rtdb.ref('reviews').on('value', (snap) => {
+                const data = snap.val();
+                reviews = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                renderReviews();
+            });
+
+            // หมวดหมู่สินค้า
+            rtdb.ref('categories').on('value', (snap) => {
+                const data = snap.val();
+                if (data) categories = data;
+                renderCategoriesUI();
+            });
+
+            // โลโก้และแบนเนอร์
+            rtdb.ref('site_settings').on('value', (snap) => {
+                const settings = snap.val() || {};
+                if (settings.logo) {
+                    document.getElementById('storeLogoImg').src = settings.logo;
+                    document.getElementById('storeLogoImg').classList.remove('hidden');
+                    document.getElementById('storeLogoText').classList.add('hidden');
+                }
+                if (settings.aboutBanner) document.getElementById('aboutBannerImg').src = settings.aboutBanner;
+                if (settings.profileBanner) document.getElementById('profileBannerImg').src = settings.profileBanner;
+                if (settings.aboutText) document.getElementById('aboutDetailText').textContent = settings.aboutText;
+                if (settings.contactIg) document.getElementById('contactIgText').textContent = settings.contactIg;
+                if (settings.contactLine) document.getElementById('contactLineText').textContent = settings.contactLine;
+                if (settings.contactFb) document.getElementById('contactFbText').textContent = settings.contactFb;
+            });
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             updateCartUI();
             updateAdminUI();
+            renderCategoriesUI();
         });
 
+        // --- 4. NAVIGATION SYSTEM ---
         function showTab(tabName) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
-            document.getElementById(`page-${tabName}`).classList.remove('hidden');
+            const target = document.getElementById(`page-${tabName}`);
+            if (target) target.classList.remove('hidden');
+
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('text-pastel-darkpink', 'font-bold');
                 btn.classList.add('text-gray-500');
@@ -436,59 +547,190 @@
             }
         }
 
+        // --- 5. CATEGORIES MANAGEMENT ---
+        function renderCategoriesUI() {
+            const container = document.getElementById('categoriesContainer');
+            if (!container) return;
+            container.innerHTML = `<button onclick="filterCategory('all', event)" class="cat-btn border border-pastel-pink bg-pastel-pink text-pastel-darkpink px-4 py-1.5 rounded-full text-xs font-medium transition whitespace-nowrap">ทั้งหมด</button>`;
+
+            const select = document.getElementById('prodCategory');
+            if (select) select.innerHTML = '';
+
+            const listContainer = document.getElementById('categoryListContainer');
+            if (listContainer) listContainer.innerHTML = '';
+
+            Object.keys(categories).forEach(key => {
+                // ปุ่ม Filter หน้าแรก
+                const btn = document.createElement('button');
+                btn.onclick = (e) => filterCategory(key, e);
+                btn.className = 'cat-btn border border-pink-200 bg-white text-gray-600 hover:bg-pastel-lightpink px-4 py-1.5 rounded-full text-xs font-medium transition whitespace-nowrap';
+                btn.textContent = categories[key];
+                container.appendChild(btn);
+
+                // Option ใน Modal เพิ่มสินค้า
+                if (select) {
+                    const opt = document.createElement('option');
+                    opt.value = key;
+                    opt.textContent = categories[key];
+                    select.appendChild(opt);
+                }
+
+                // List ใน Modal จัดการหมวดหมู่
+                if (listContainer) {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center justify-between bg-pink-50 p-2 rounded-xl text-xs';
+                    div.innerHTML = `
+                        <span><b>${key}</b>: ${categories[key]}</span>
+                        <button onclick="deleteCategory('${key}')" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+                    `;
+                    listContainer.appendChild(div);
+                }
+            });
+        }
+
+        function openCategoryModal() { document.getElementById('categoryModal').classList.remove('hidden'); }
+        function closeCategoryModal() { document.getElementById('categoryModal').classList.add('hidden'); }
+
+        function addCategory() {
+            const key = document.getElementById('newCatKey').value.trim().toLowerCase();
+            const name = document.getElementById('newCatName').value.trim();
+            if (!key || !name) return alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+            categories[key] = name;
+            if (rtdb) rtdb.ref('categories').set(categories);
+            document.getElementById('newCatKey').value = '';
+            document.getElementById('newCatName').value = '';
+        }
+
+        function deleteCategory(key) {
+            if (confirm(`ต้องการลบหมวดหมู่ ${categories[key]} ใช่หรือไม่?`)) {
+                delete categories[key];
+                if (rtdb) rtdb.ref('categories').set(categories);
+            }
+        }
+
+        // --- 6. IMAGE HELPER (อัปโหลดรูปจากโทรศัพท์) ---
+        function handleImageUpload(event, callback) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) return alert('ไฟล์มีขนาดใหญ่เกิน 2MB');
+
+            const reader = new FileReader();
+            reader.onload = (e) => callback(e.target.result);
+            reader.readAsDataURL(file);
+        }
+
+        function setProductImageBase64(base64) {
+            prodImageBase64Temp = base64;
+            alert('อัปโหลดรูปภาพสินค้าเรียบร้อยแล้ว');
+        }
+
+        // โลโก้
+        function openLogoModal() { document.getElementById('logoModal').classList.remove('hidden'); }
+        function closeLogoModal() { document.getElementById('logoModal').classList.add('hidden'); }
+        function saveLogoData(base64) {
+            if (rtdb) rtdb.ref('site_settings/logo').set(base64);
+            closeLogoModal();
+        }
+        function saveLogoUrl() {
+            const url = document.getElementById('logoUrlInput').value.trim();
+            if (url && rtdb) rtdb.ref('site_settings/logo').set(url);
+            closeLogoModal();
+        }
+
+        // แบนเนอร์ (1122x495)
+        function openBannerModal(type) {
+            document.getElementById('targetBannerType').value = type;
+            document.getElementById('bannerModal').classList.remove('hidden');
+        }
+        function closeBannerModal() { document.getElementById('bannerModal').classList.add('hidden'); }
+        function saveBannerData(base64) {
+            const type = document.getElementById('targetBannerType').value;
+            if (rtdb) rtdb.ref(`site_settings/${type}Banner`).set(base64);
+            closeBannerModal();
+        }
+        function saveBannerUrl() {
+            const type = document.getElementById('targetBannerType').value;
+            const url = document.getElementById('bannerUrlInput').value.trim();
+            if (url && rtdb) rtdb.ref(`site_settings/${type}Banner`).set(url);
+            closeBannerModal();
+        }
+
+        // --- 7. PRODUCTS RENDERING & FILTERING ---
+        function applyFilterAndRender() {
+            let filtered = products;
+            if (currentCategoryFilter !== 'all') {
+                filtered = products.filter(p => p.category === currentCategoryFilter);
+            }
+            const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+            if (query) {
+                filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(query));
+            }
+            renderProducts(filtered);
+        }
+
         function renderProducts(items) {
             const container = document.getElementById('productsContainer');
+            if (!container) return;
             container.innerHTML = '';
-            if (items.length === 0) {
+
+            if (!items || items.length === 0) {
                 container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 text-xs">ไม่พบรายการสินค้าค่ะ 🌸</div>`;
                 return;
             }
+
+            const fragment = document.createDocumentFragment();
             items.forEach(prod => {
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-3xl p-3 shadow-sm border border-pink-100 flex flex-col justify-between relative group hover:shadow-md transition duration-300';
+                
+                const adminControls = isAdmin ? `
+                    <div class="absolute top-2 right-2 z-10 flex space-x-1">
+                        <button onclick="editProduct('${prod.id}')" class="w-7 h-7 bg-white/90 text-amber-500 rounded-full flex items-center justify-center shadow hover:bg-white text-xs"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteProduct('${prod.id}')" class="w-7 h-7 bg-white/90 text-rose-500 rounded-full flex items-center justify-center shadow hover:bg-white text-xs"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                ` : '';
+
                 card.innerHTML = `
-                    ${isAdmin ? `
-                        <div class="absolute top-2 right-2 z-10 flex space-x-1">
-                            <button onclick="editProduct('${prod.id}')" class="w-7 h-7 bg-white/90 text-amber-500 rounded-full flex items-center justify-center shadow hover:bg-white text-xs"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteProduct('${prod.id}')" class="w-7 h-7 bg-white/90 text-rose-500 rounded-full flex items-center justify-center shadow hover:bg-white text-xs"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    ` : ''}
+                    ${adminControls}
                     <div class="overflow-hidden rounded-2xl mb-3 aspect-square bg-pastel-lightpink">
-                        <img src="${prod.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        <img src="${prod.image || ''}" alt="${prod.name || 'สินค้า'}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
                     </div>
                     <div class="space-y-1 mb-3">
-                        <h4 class="font-medium text-xs text-gray-800 line-clamp-1">${prod.name}</h4>
-                        <p class="font-heading text-sm text-pastel-darkpink font-bold">฿${prod.price}</p>
+                        <h4 class="font-medium text-xs text-gray-800 line-clamp-1">${prod.name || 'ไม่มีชื่อสินค้า'}</h4>
+                        <p class="font-heading text-sm text-pastel-darkpink font-bold">฿${prod.price || 0}</p>
                     </div>
                     <button onclick="addToCart('${prod.id}')" class="w-full bg-pastel-lightpink hover:bg-pastel-pink text-pastel-darkpink font-medium text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1">
                         <i class="fa-solid fa-plus text-[10px]"></i><span>ใส่ตระกร้า</span>
                     </button>
                 `;
-                container.appendChild(card);
+                fragment.appendChild(card);
             });
+            container.appendChild(fragment);
         }
 
-        function filterCategory(cat) {
+        function filterCategory(cat, evt) {
+            currentCategoryFilter = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.classList.remove('bg-pastel-pink', 'text-pastel-darkpink');
                 btn.classList.add('bg-white', 'text-gray-600');
             });
-            event.target.classList.add('bg-pastel-pink', 'text-pastel-darkpink');
-            if (cat === 'all') renderProducts(products);
-            else renderProducts(products.filter(p => p.category === cat));
+            if (evt && evt.target) {
+                evt.target.classList.add('bg-pastel-pink', 'text-pastel-darkpink');
+            }
+            applyFilterAndRender();
         }
 
-        function searchProducts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            renderProducts(products.filter(p => p.name.toLowerCase().includes(query)));
-        }
+        function searchProducts() { applyFilterAndRender(); }
 
+        // --- 8. SHOPPING CART LOGIC ---
         function addToCart(id) {
             const prod = products.find(p => p.id === id);
+            if (!prod) return;
             const exist = cart.find(c => c.id === id);
             if (exist) exist.qty += 1;
             else cart.push({ ...prod, qty: 1 });
-            localStorage.setItem('pinkie_cart', JSON.stringify(cart));
+
+            try { localStorage.setItem('pinkie_cart', JSON.stringify(cart)); } catch(e){}
             updateCartUI();
             toggleCart(true);
         }
@@ -498,14 +740,17 @@
             if (!item) return;
             item.qty += delta;
             if (item.qty <= 0) cart = cart.filter(c => c.id !== id);
-            localStorage.setItem('pinkie_cart', JSON.stringify(cart));
+            
+            try { localStorage.setItem('pinkie_cart', JSON.stringify(cart)); } catch(e){}
             updateCartUI();
         }
 
         function updateCartUI() {
             const container = document.getElementById('cartItemsContainer');
-            const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
-            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            if (!container) return;
+
+            const totalItems = cart.reduce((acc, item) => acc + (item.qty || 0), 0);
+            const subtotal = cart.reduce((acc, item) => acc + ((item.price || 0) * (item.qty || 0)), 0);
             const shipping = subtotal > 0 ? 40 : 0;
 
             document.getElementById('cartCount').textContent = totalItems;
@@ -518,12 +763,14 @@
                 container.innerHTML = `<div class="text-center py-10 text-gray-400 text-xs">ไม่มีสินค้าในตระกร้าค่ะ 🌸</div>`;
                 return;
             }
+
+            const fragment = document.createDocumentFragment();
             cart.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'flex items-center justify-between bg-pastel-lightpink/30 p-2.5 rounded-2xl border border-pink-100';
                 div.innerHTML = `
                     <div class="flex items-center space-x-3">
-                        <img src="${item.image}" class="w-12 h-12 rounded-xl object-cover">
+                        <img src="${item.image}" class="w-12 h-12 rounded-xl object-cover" onerror="this.src='https://via.placeholder.com/100'">
                         <div>
                             <h5 class="text-xs font-medium text-gray-800">${item.name}</h5>
                             <span class="text-xs text-pastel-darkpink font-bold">฿${item.price}</span>
@@ -535,8 +782,9 @@
                         <button onclick="updateCartQty('${item.id}', 1)" class="text-gray-400 hover:text-pastel-darkpink px-1 text-xs">+</button>
                     </div>
                 `;
-                container.appendChild(div);
+                fragment.appendChild(div);
             });
+            container.appendChild(fragment);
         }
 
         function toggleCart(forceOpen = false) {
@@ -549,30 +797,25 @@
             if (cart.length === 0) return alert('โปรดเลือกสินค้าลงตระกร้าก่อนนะคะ');
             alert('ขอบคุณสำหรับคำสั่งซื้อค่ะ! ทางร้านจะจัดส่งให้อย่างเร่งด่วน 💕');
             cart = [];
-            localStorage.setItem('pinkie_cart', JSON.stringify(cart));
+            try { localStorage.setItem('pinkie_cart', JSON.stringify(cart)); } catch(e){}
             updateCartUI();
             toggleCart();
         }
 
+        // --- 9. REVIEWS SYSTEM ---
         function setSelectRating(r) {
             currentSelectedRating = r;
             document.querySelectorAll('#starSelector .star-btn').forEach((btn, idx) => {
-                if (idx < r) btn.className = 'star-btn text-amber-400';
-                else btn.className = 'star-btn text-gray-200';
+                btn.className = idx < r ? 'star-btn text-amber-400' : 'star-btn text-gray-200';
             });
         }
 
         function previewReviewImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentUploadedImageBase64 = e.target.result;
-                    document.getElementById('imgPreviewTag').src = e.target.result;
-                    document.getElementById('revImagePreview').classList.remove('hidden');
-                }
-                reader.readAsDataURL(file);
-            }
+            handleImageUpload(event, (base64) => {
+                currentUploadedImageBase64 = base64;
+                document.getElementById('imgPreviewTag').src = base64;
+                document.getElementById('revImagePreview').classList.remove('hidden');
+            });
         }
 
         function toggleWriteReviewModal() {
@@ -581,42 +824,51 @@
 
         function handleCustomerSubmitReview(e) {
             e.preventDefault();
-            const author = document.getElementById('revAuthor').value;
-            const comment = document.getElementById('revComment').value;
+            if (!rtdb) return alert('ฐานข้อมูลยังไม่พร้อมใช้งานค่ะ');
+
+            const author = document.getElementById('revAuthor').value.trim();
+            const comment = document.getElementById('revComment').value.trim();
+            const submitBtn = document.getElementById('submitReviewBtn');
+
+            if (!author || !comment) return alert('กรุณากรอกข้อมูลให้ครบถ้วนค่ะ');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังส่ง...';
 
             rtdb.ref('reviews').push({
                 author,
                 rating: currentSelectedRating,
                 comment,
-                image: currentUploadedImageBase64,
+                image: currentUploadedImageBase64 || null,
                 status: 'pending',
                 date: new Date().toISOString().split('T')[0]
             }, (err) => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'ส่งรีวิวให้แอดมินอนุมัติ 🌸';
+
                 if (!err) {
                     toggleWriteReviewModal();
                     document.getElementById('revAuthor').value = '';
                     document.getElementById('revComment').value = '';
+                    document.getElementById('revImageFile').value = '';
                     document.getElementById('revImagePreview').classList.add('hidden');
                     currentUploadedImageBase64 = null;
                     alert('ส่งรีวิวเรียบร้อยแล้วค่ะ! รอแอดมินตรวจสอบและอนุมัตินะคะ ✨');
+                } else {
+                    alert('เกิดข้อผิดพลาดในการส่งรีวิว กรุณาลองใหม่อีกครั้ง');
                 }
             });
         }
 
-        function approveReview(id) {
-            rtdb.ref(`reviews/${id}`).update({ status: 'approved' });
-        }
-
-        function deleteReview(id) {
-            if (confirm('ต้องการลบรีวิวนี้ใช่หรือไม่?')) {
-                rtdb.ref(`reviews/${id}`).remove();
-            }
-        }
+        function approveReview(id) { if (rtdb) rtdb.ref(`reviews/${id}`).update({ status: 'approved' }); }
+        function deleteReview(id) { if (confirm('ต้องการลบรีวิวนี้ใช่หรือไม่?') && rtdb) rtdb.ref(`reviews/${id}`).remove(); }
 
         function renderReviews() {
             const approvedContainer = document.getElementById('approvedReviewsContainer');
             const pendingContainer = document.getElementById('pendingReviewsContainer');
             const adminModSection = document.getElementById('adminModerationSection');
+
+            if (!approvedContainer) return;
 
             const approvedReviews = reviews.filter(r => r.status === 'approved');
             const pendingReviews = reviews.filter(r => r.status === 'pending');
@@ -627,29 +879,32 @@
                 adminModSection.classList.remove('hidden');
                 document.getElementById('pendingCountBadge').textContent = `${pendingReviews.length} รายการ`;
                 pendingContainer.innerHTML = '';
+
                 if (pendingReviews.length === 0) {
                     pendingContainer.innerHTML = `<div class="text-xs text-amber-700 italic">ไม่มีรีวิวที่รออนุมัติในขณะนี้ค่ะ ✨</div>`;
                 } else {
+                    const fragment = document.createDocumentFragment();
                     pendingReviews.forEach(r => {
                         const div = document.createElement('div');
                         div.className = 'bg-white p-3 rounded-2xl border border-amber-200 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs';
                         div.innerHTML = `
                             <div class="space-y-1">
                                 <div class="flex items-center space-x-2">
-                                    <span class="font-bold text-gray-800">${r.author}</span>
-                                    <span class="text-amber-400">★ ${r.rating}</span>
-                                    <span class="text-[10px] text-gray-400">${r.date}</span>
+                                    <span class="font-bold text-gray-800">${r.author || 'ไม่ระบุชื่อ'}</span>
+                                    <span class="text-amber-400">★ ${r.rating || 5}</span>
+                                    <span class="text-[10px] text-gray-400">${r.date || ''}</span>
                                 </div>
-                                <p class="text-gray-600">${r.comment}</p>
-                                ${r.image ? `<a href="${r.image}" target="_blank" class="inline-block text-[10px] text-pastel-darkpink underline"><i class="fa-solid fa-image"></i> ดูหลักฐานที่แนบมา</a>` : ''}
+                                <p class="text-gray-600">${r.comment || ''}</p>
+                                ${r.image ? `<a href="${r.image}" target="_blank" class="inline-block text-[10px] text-pastel-darkpink underline"><i class="fa-solid fa-image"></i> ดูรูปแนบ</a>` : ''}
                             </div>
                             <div class="flex items-center space-x-2">
                                 <button onclick="approveReview('${r.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-full text-[11px] font-medium"><i class="fa-solid fa-check"></i> อนุมัติ</button>
                                 <button onclick="deleteReview('${r.id}')" class="bg-rose-400 hover:bg-rose-500 text-white px-3 py-1 rounded-full text-[11px] font-medium"><i class="fa-solid fa-xmark"></i> ปฏิเสธ</button>
                             </div>
                         `;
-                        pendingContainer.appendChild(div);
+                        fragment.appendChild(div);
                     });
+                    pendingContainer.appendChild(fragment);
                 }
             } else {
                 adminModSection.classList.add('hidden');
@@ -660,38 +915,49 @@
                 approvedContainer.innerHTML = `<div class="text-center py-8 text-xs text-gray-400">ยังไม่มีรีวิวที่ได้รับการอนุมัติในขณะนี้ค่ะ 🌸</div>`;
                 return;
             }
+
+            const fragment = document.createDocumentFragment();
             approvedReviews.forEach(r => {
                 const card = document.createElement('div');
                 card.className = 'p-4 bg-pastel-lightpink/20 rounded-2xl border border-pink-100 space-y-2 relative';
+                
                 let stars = '';
-                for (let i = 0; i < 5; i++) stars += i < r.rating ? '<i class="fa-solid fa-star text-amber-400"></i>' : '<i class="fa-solid fa-star text-gray-200"></i>';
+                const ratingNum = r.rating || 5;
+                for (let i = 0; i < 5; i++) {
+                    stars += i < ratingNum ? '<i class="fa-solid fa-star text-amber-400"></i>' : '<i class="fa-solid fa-star text-gray-200"></i>';
+                }
+
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
-                            <span class="font-medium text-xs text-gray-800">${r.author}</span>
+                            <span class="font-medium text-xs text-gray-800">${r.author || 'ผู้ใช้งาน'}</span>
                             <div class="text-[10px] space-x-0.5">${stars}</div>
                         </div>
-                        <span class="text-[10px] text-gray-400">${r.date}</span>
+                        <span class="text-[10px] text-gray-400">${r.date || ''}</span>
                     </div>
-                    <p class="text-xs text-gray-600">${r.comment}</p>
-                    ${r.image ? `<img src="${r.image}" class="w-24 h-24 object-cover rounded-xl border border-pink-200">` : ''}
+                    <p class="text-xs text-gray-600">${r.comment || ''}</p>
+                    ${r.image ? `<img src="${r.image}" class="w-24 h-24 object-cover rounded-xl border border-pink-200" onerror="this.style.display='none'">` : ''}
                     ${isAdmin ? `<button onclick="deleteReview('${r.id}')" class="absolute bottom-3 right-3 text-rose-400 hover:text-rose-600 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
                 `;
-                approvedContainer.appendChild(card);
+                fragment.appendChild(card);
             });
+            approvedContainer.appendChild(fragment);
         }
 
+        // --- 10. ADMIN & EDITING CONTROLS ---
         function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
         function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
 
         function loginAdmin() {
-            if (document.getElementById('adminPassword').value === '1234') {
+            const pwd = document.getElementById('adminPassword').value;
+            if (pwd === '1234') {
                 isAdmin = true;
-                localStorage.setItem('pinkie_is_admin', true);
+                localStorage.setItem('pinkie_is_admin', 'true');
                 updateAdminUI();
-                renderProducts(products);
+                applyFilterAndRender();
                 renderReviews();
                 closeAdminModal();
+                document.getElementById('adminPassword').value = '';
                 alert('เข้าสู่ระบบผู้ดูแลระบบสำเร็จ!');
             } else {
                 alert('รหัสผ่านไม่ถูกต้อง (Demo: 1234)');
@@ -700,25 +966,56 @@
 
         function logoutAdmin() {
             isAdmin = false;
-            localStorage.setItem('pinkie_is_admin', false);
+            localStorage.setItem('pinkie_is_admin', 'false');
             updateAdminUI();
-            renderProducts(products);
+            applyFilterAndRender();
             renderReviews();
             alert('ออกจากระบบแอดมินเรียบร้อยแล้วค่ะ');
         }
 
         function updateAdminUI() {
-            if (isAdmin) {
-                document.getElementById('adminBanner').classList.remove('hidden');
-                document.getElementById('addProductBtn').classList.remove('hidden');
-                document.getElementById('adminBtnText').textContent = 'โหมดแอดมิน';
-            } else {
-                document.getElementById('adminBanner').classList.add('hidden');
-                document.getElementById('addProductBtn').classList.add('hidden');
-                document.getElementById('adminBtnText').textContent = 'เข้าสู่ระบบแอดมิน';
+            const elements = [
+                { id: 'adminBanner', show: isAdmin },
+                { id: 'addProductBtn', show: isAdmin },
+                { id: 'manageCategoriesBtn', show: isAdmin },
+                { id: 'changeLogoBtn', show: isAdmin },
+                { id: 'editAboutBannerBtn', show: isAdmin },
+                { id: 'editProfileBannerBtn', show: isAdmin },
+                { id: 'editAboutTextBtn', show: isAdmin },
+                { id: 'editContactBtn', show: isAdmin },
+                { id: 'writeReviewBtn', show: !isAdmin } // เอาปุ่มเขียนรีวิวออกในโหมดแอดมิน
+            ];
+
+            elements.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    if (item.show) el.classList.remove('hidden');
+                    else el.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('adminBtnText').textContent = isAdmin ? 'โหมดแอดมิน' : 'เข้าสู่ระบบแอดมิน';
+        }
+
+        // แก้ไขข้อความเกี่ยวกับเรา & ติดต่อเรา
+        function openEditAboutModal() {
+            const newText = prompt('แก้ไขข้อความเกี่ยวกับเรา:', document.getElementById('aboutDetailText').textContent);
+            if (newText !== null && rtdb) rtdb.ref('site_settings/aboutText').set(newText);
+        }
+
+        function openContactModal() {
+            const ig = prompt('แก้ไข Instagram:', document.getElementById('contactIgText').textContent);
+            const line = prompt('แก้ไข LINE:', document.getElementById('contactLineText').textContent);
+            const fb = prompt('แก้ไข Facebook:', document.getElementById('contactFbText').textContent);
+            
+            if (rtdb) {
+                if (ig !== null) rtdb.ref('site_settings/contactIg').set(ig);
+                if (line !== null) rtdb.ref('site_settings/contactLine').set(line);
+                if (fb !== null) rtdb.ref('site_settings/contactFb').set(fb);
             }
         }
 
+        // จัดการสินค้า
         function openProductModal(isEdit = false) {
             document.getElementById('productModalTitle').textContent = isEdit ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่';
             document.getElementById('productModal').classList.remove('hidden');
@@ -730,37 +1027,41 @@
             document.getElementById('prodName').value = '';
             document.getElementById('prodPrice').value = '';
             document.getElementById('prodImageUrl').value = '';
+            prodImageBase64Temp = null;
         }
 
         function saveProduct(e) {
             e.preventDefault();
+            if (!rtdb) return alert('ฐานข้อมูลยังไม่พร้อมใช้งานค่ะ');
+
             const id = document.getElementById('editProductId').value;
-            const name = document.getElementById('prodName').value;
+            const name = document.getElementById('prodName').value.trim();
             const category = document.getElementById('prodCategory').value;
-            const price = parseFloat(document.getElementById('prodPrice').value);
-            const image = document.getElementById('prodImageUrl').value;
+            const price = parseFloat(document.getElementById('prodPrice').value) || 0;
+            const image = prodImageBase64Temp || document.getElementById('prodImageUrl').value.trim();
+
+            const productData = { name, category, price, image };
 
             if (id) {
-                rtdb.ref(`products/${id}`).update({ name, category, price, image });
+                rtdb.ref(`products/${id}`).update(productData, (err) => { if (!err) closeProductModal(); });
             } else {
-                rtdb.ref('products').push({ name, category, price, image });
+                rtdb.ref('products').push(productData, (err) => { if (!err) closeProductModal(); });
             }
-            closeProductModal();
         }
 
         function editProduct(id) {
             const prod = products.find(p => p.id === id);
             if (!prod) return;
             document.getElementById('editProductId').value = prod.id;
-            document.getElementById('prodName').value = prod.name;
-            document.getElementById('prodCategory').value = prod.category;
-            document.getElementById('prodPrice').value = prod.price;
-            document.getElementById('prodImageUrl').value = prod.image;
+            document.getElementById('prodName').value = prod.name || '';
+            document.getElementById('prodCategory').value = prod.category || 'dessert';
+            document.getElementById('prodPrice').value = prod.price || 0;
+            document.getElementById('prodImageUrl').value = prod.image || '';
             openProductModal(true);
         }
 
         function deleteProduct(id) {
-            if (confirm('ต้องการลบสินค้านี้ใช่หรือไม่?')) {
+            if (confirm('ต้องการลบสินค้านี้ใช่หรือไม่?') && rtdb) {
                 rtdb.ref(`products/${id}`).remove();
             }
         }
